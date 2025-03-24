@@ -46,10 +46,21 @@ const countries = Country.getAllCountries().map((country)=>({
   label:country.name
 }))
 
+
+const handleStateChange=(stateName:string)=>{
+  
+}
+
 export function CityPicker() {
 const[selectCountry,setSelectCountry]=useState<TCountry>(null);
 const[selectState,setSelectState]=useState<TState>(null)
 const[selectCity,setSelectCity]=useState<TCity>(null)
+const handleCounrtyChange =(countryName:string)=>{
+  const country =countries.find((resp)=>resp.label===countryName) as TCountry;
+  setSelectCountry(country);
+  setSelectState(null);
+  setSelectCity(null);
+}
 
   return (
     
@@ -66,24 +77,29 @@ const[selectCity,setSelectCity]=useState<TCity>(null)
       
       <CardContent>
         <div className="space-y-4">
-          <Select>
+          <Select onValueChange={handleCounrtyChange}>
             <SelectTrigger className="w-full" >
-              <SelectValue placeholder="Select a City" />
+              <SelectValue placeholder="Select a Country" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
+              {countries.map((country, index:number)=>(
+                <SelectItem key={index} value={country.label}>{country.label}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
-          <Select>
+          
+          
+          <Select onValueChange={handleStateChange}
+          disabled={!selectCountry}
+          >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a City" />
+              <SelectValue placeholder="Select a State" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
+             {selectCountry && State.getStatesOfCountry(selectCountry.value.isoCode)?.map((state,index:number)=>(
+              <SelectItem key={index} value={state.name}>{state.name}</SelectItem>
+             ))}
+              
             </SelectContent>
           </Select>
           <Select>
