@@ -47,12 +47,10 @@ const countries = Country.getAllCountries().map((country)=>({
 }))
 
 
-const handleStateChange=(stateName:string)=>{
-  
-}
+
 
 export function CityPicker() {
-const[selectCountry,setSelectCountry]=useState<TCountry>(null);
+const[selectedCountry,setSelectCountry]=useState<TCountry>(null);
 const[selectState,setSelectState]=useState<TState>(null)
 const[selectCity,setSelectCity]=useState<TCity>(null)
 const handleCounrtyChange =(countryName:string)=>{
@@ -60,6 +58,25 @@ const handleCounrtyChange =(countryName:string)=>{
   setSelectCountry(country);
   setSelectState(null);
   setSelectCity(null);
+}
+
+const handleStateChange=(stateName:string)=>{
+  if(selectedCountry){
+    const state=State.getStatesOfCountry(selectedCountry.value.isoCode)?.find((s)=>s.name===stateName);
+    if(state){
+      setSelectState({
+        value:{
+          latitude:state.latitude!,
+          longitude:state.longitude!,
+          countryCode:state.countryCode,
+          name:state.name,
+          isoCode: state.isoCode,
+
+        },
+        label:state.name,
+      });
+    }
+  }
 }
 
   return (
@@ -90,13 +107,13 @@ const handleCounrtyChange =(countryName:string)=>{
           
           
           <Select onValueChange={handleStateChange}
-          disabled={!selectCountry}
+          disabled={!selectedCountry}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a State" />
             </SelectTrigger>
             <SelectContent>
-             {selectCountry && State.getStatesOfCountry(selectCountry.value.isoCode)?.map((state,index:number)=>(
+             {selectedCountry && State.getStatesOfCountry(selectedCountry.value.isoCode)?.map((state,index:number)=>(
               <SelectItem key={index} value={state.name}>{state.name}</SelectItem>
              ))}
               
