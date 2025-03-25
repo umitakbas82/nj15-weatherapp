@@ -77,7 +77,25 @@ const handleStateChange=(stateName:string)=>{
       });
     }
   }
-}
+};
+
+const handleCityChange=(cityName:string)=>{
+  if(selectedCountry){
+    const city =City.getCitiesOfCountry(selectedCountry.value.isoCode)?.find((c)=>c.name ===cityName);
+    if(city){
+      setSelectCity({
+        value:{
+          latitude:city.latitude!,
+          longitude:city.longitude!,
+          countryCode:city.countryCode,
+          name:city.name,
+          stateCode:city.stateCode,
+        },
+        label:city.name
+      });
+    }
+  }
+};
 
   return (
     
@@ -119,14 +137,17 @@ const handleStateChange=(stateName:string)=>{
               
             </SelectContent>
           </Select>
-          <Select>
+          
+          
+          
+          <Select onValueChange={handleCityChange} disabled={!selectedCountry || !selectState}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a City" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
+            {selectedCountry && State.getStatesOfCountry(selectedCountry.value.isoCode)?.map((state,index:number)=>(
+              <SelectItem key={index} value={state.name}>{state.name}</SelectItem>
+             ))}
             </SelectContent>
           </Select>
         </div>
