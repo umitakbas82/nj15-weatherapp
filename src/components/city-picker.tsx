@@ -145,7 +145,7 @@ const handleCityChange=(cityName:string)=>{
               <SelectValue placeholder="Select a City" />
             </SelectTrigger>
             <SelectContent>
-            {selectedCountry && State.getStatesOfCountry(selectedCountry.value.isoCode)?.map((state,index:number)=>(
+            {selectedCountry && City.getCitiesOfCountry(selectedCountry.value.isoCode)?.map((state,index:number)=>(
               <SelectItem key={index} value={state.name}>{state.name}</SelectItem>
              ))}
             </SelectContent>
